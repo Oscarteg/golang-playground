@@ -83,16 +83,18 @@ func (handler *taskHandler) Delete(c *gin.Context) {
 	err := handler.taskService.Delete(input)
 
 	if err != nil {
+		var status int
 		response := Response{
 			Error:    err.Error(),
 		}
 
-		c.JSON(http.StatusConflict, response)
-
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-
-			c.AbortWithStatus(http.StatusNotFound)
+			status = http.StatusNotFound
+		} else {
+			status = http.StatusConflict
 		}
+
+		c.JSON(status,  response)
 	}
 
 
