@@ -6,6 +6,7 @@ type Repository interface {
 	Insert(task Task) (Task, error)
 	Find(id string) (Task, error)
 	Index() ([]Task, error)
+	Update(id string, task Task) (Task, error)
 	Delete(id string) error
 }
 
@@ -53,7 +54,7 @@ func (r *repository) Find(id string) (Task, error) {
 	return task, nil
 }
 
-func (r *repository) Delete(id string) error  {
+func (r *repository) Delete(id string) error {
 	task, err := r.Find(id)
 
 	if err != nil {
@@ -62,10 +63,21 @@ func (r *repository) Delete(id string) error  {
 
 	err = r.db.Delete(&task).Error
 
-
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (r *repository) Update(id string, newTask Task) (Task, error) {
+	task, err := r.Find(id)
+
+	if err != nil {
+		return task, err
+	}
+
+	r.db.Model(&task).Updates(newTask)
+
+	return task, nil
 }
