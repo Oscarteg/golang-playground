@@ -21,6 +21,7 @@ func NewTaskHandler(taskService task.Service) *taskHandler {
 	return &taskHandler{taskService}
 }
 
+
 func (handler *taskHandler) Store(c *gin.Context) {
 	var input task.InputTask
 	err := c.ShouldBindJSON(&input)
@@ -32,7 +33,6 @@ func (handler *taskHandler) Store(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusBadRequest, response)
-
 		return
 	}
 
@@ -44,7 +44,6 @@ func (handler *taskHandler) Store(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusBadRequest, response)
-
 		return
 	}
 
@@ -52,9 +51,16 @@ func (handler *taskHandler) Store(c *gin.Context) {
 		Data: newTask,
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusCreated, response)
 }
 
+// ListTask godoc
+// @Summary List tasks
+// @Description get tasks
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} task.Task
+// @Router /tasks [get]
 func (handler *taskHandler) Index(c *gin.Context) {
 	var input task.InputTask
 	err := c.ShouldBindJSON(&input)
@@ -66,6 +72,7 @@ func (handler *taskHandler) Index(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusBadRequest, response)
+		return
 
 	}
 
@@ -79,22 +86,23 @@ func (handler *taskHandler) Index(c *gin.Context) {
 func (handler *taskHandler) Find(c *gin.Context) {
 	input := task.FindTask{Id: c.Param("id")}
 
-	task, err := handler.taskService.Find(input)
+	newTask, err := handler.taskService.Find(input)
 
 	if err != nil {
 		response := Response{
 			Error:    err.Error(),
 		}
 
-		c.JSON(http.StatusBadRequest, response)
+		c.JSON(http.StatusNotFound, response)
+		return
 
 	}
 
 	response := Response{
-		Data: task,
+		Data: newTask,
 	}
 
-	c.JSON(http.StatusNoContent, response)
+	c.JSON(http.StatusOK, response)
 }
 
 
@@ -105,22 +113,21 @@ func (handler *taskHandler) Delete(c *gin.Context) {
 	err := handler.taskService.Delete(input)
 
 	if err != nil {
-		var status int
 		response := Response{
 			Error:    err.Error(),
 		}
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			status = http.StatusNotFound
-		} else {
-			status = http.StatusConflict
+			c.JSON(http.StatusNotFound, nil)
+			return
 		}
 
-		c.JSON(status,  response)
+		c.JSON(http.StatusConflict,  response)
+		return
 	}
 
 
-	c.JSON(http.StatusNoContent, struct {}{})
+	c.JSON(http.StatusNoContent, nil)
 }
 
 
@@ -135,7 +142,7 @@ func (handler *taskHandler) Update(c *gin.Context) {
 			Error: err.Error(),
 		}
 
-		c.JSON(http.StatusBadRequest, response)
+		c.JSON(http.StatusNotFound, response)
 
 		return
 	}

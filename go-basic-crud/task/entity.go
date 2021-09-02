@@ -12,12 +12,11 @@ type Task struct {
 	Description string         `json:description`
 	UpdatedAt   time.Time      `json:updated_at`
 	CreatedAt   time.Time      `json:created_at`
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	//DeletedAt   gorm.DeletedAt `json:deleted_at gorm:"index"`
 
 }
 
 func (task *Task) BeforeCreate(tx *gorm.DB) (err error) {
 	task.ID = uuid.New()
-	// LALLSA
 	return
 }
