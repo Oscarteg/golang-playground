@@ -16,7 +16,7 @@
         "version": "1.0"
     },
     "host": "localhost:8080",
-    "basePath": "/api/v1",
+    "basePath": "/api",
     "paths": {
         "/tasks": {
             "get": {
@@ -63,18 +63,5 @@
                 }
             }
         }
-    },
-    "securityDefinitions": {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
-        },
-        "BasicAuth": {
-            "type": "basic"
-        }
-    },
-    "x-extension-openapi": {
-        "example": "value on a json format"
     }
 }

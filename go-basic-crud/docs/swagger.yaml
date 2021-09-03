@@ -1,4 +1,4 @@
-basePath: /api/v1
+basePath: /api
 definitions:
   task.Task:
     properties:
@@ -42,13 +42,4 @@ paths:
               $ref: '#/definitions/task.Task'
             type: array
       summary: List tasks
-securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: Authorization
-    type: apiKey
-  BasicAuth:
-    type: basic
 swagger: "2.0"
-x-extension-openapi:
-  example: value on a json format

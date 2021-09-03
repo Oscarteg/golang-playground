@@ -1,40 +1,30 @@
 package main
 
 import (
-	"go-basic-crud/handler"
-	"go-basic-crud/task"
-	"log"
-
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go-basic-crud/handler"
+	"go-basic-crud/task"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-
-	_ "github.com/swaggo/gin-swagger/example/basic/docs"
+	"log"
 )
 
 // @title Swagger Example API
 // @version 1.0
 // @description This is a sample server celler server.
 // @termsOfService http://swagger.io/terms/
-
 // @contact.name API Support
 // @contact.url http://www.swagger.io/support
 // @contact.email support@swagger.io
-
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
 // @host localhost:8080
-// @BasePath /api/v1
+// @BasePath /api
 // @query.collection.format multi
-
-// @securityDefinitions.basic BasicAuth
-
-// @securityDefinitions.apikey ApiKeyAuth
 // @in header
-// @name Authorization
 func main() {
 
 	databaseString := "root:my-secret-pw@tcp(127.0.0.1:33060)/go-basic-crud?charset=utf8mb4&parseTime=True"
@@ -53,15 +43,33 @@ func main() {
 	taskHandler := handler.NewTaskHandler(taskService)
 
 	router := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://google.com"}
+	// config.AllowOrigins == []string{"http://google.com", "http://facebook.com"}
 
-	api := router.Group("api")
+	router.Use(cors.New(config))
 
-	api.POST("/task", taskHandler.Store)
-	api.GET("/task", taskHandler.Index)
-	api.GET("/task/:id", taskHandler.Find)
-	api.PUT("/task/:id", taskHandler.Update)
-	api.DELETE("/task/:id", taskHandler.Delete)
+	//router.Use(cors.New(cors.Config{
+	//	AllowOrigins:     []string{"http://localhost:8088"},
+	//	AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "DELETE"},
+	//	AllowHeaders:     []string{"Origin", "Authorization", "x-api-key", "content-type"},
+	//	ExposeHeaders:    []string{"Content-Length"},
+	//	AllowCredentials: true,
+	//	MaxAge: 12 * time.Hour,
+	//}))
 
+	api := router.Group("/api")
+	{
+		taskApi := api.Group("/tasks")
+		{
+			taskApi.POST("", taskHandler.Store)
+			taskApi.GET("", taskHandler.Index)
+			taskApi.GET("/:id", taskHandler.Find)
+			taskApi.PUT("/:id", taskHandler.Update)
+			taskApi.DELETE("/:id", taskHandler.Delete)
+		}
+
+	}
 
 	// swagger
 	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json") // The url pointing to API definition

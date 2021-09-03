@@ -77,19 +77,6 @@ var doc = `{
                 }
             }
         }
-    },
-    "securityDefinitions": {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
-        },
-        "BasicAuth": {
-            "type": "basic"
-        }
-    },
-    "x-extension-openapi": {
-        "example": "value on a json format"
     }
 }`
 
@@ -106,7 +93,7 @@ type swaggerInfo struct {
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
 	Host:        "localhost:8080",
-	BasePath:    "/api/v1",
+	BasePath:    "/api",
 	Schemes:     []string{},
 	Title:       "Swagger Example API",
 	Description: "This is a sample server celler server.",

@@ -118,7 +118,7 @@ func (handler *taskHandler) Delete(c *gin.Context) {
 		}
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, nil)
+			c.JSON(http.StatusNotFound, response)
 			return
 		}
 
@@ -127,7 +127,8 @@ func (handler *taskHandler) Delete(c *gin.Context) {
 	}
 
 
-	c.JSON(http.StatusNoContent, nil)
+	// No JSON here because we need an empty response
+	c.Status(http.StatusNoContent)
 }
 
 
