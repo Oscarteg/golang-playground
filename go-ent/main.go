@@ -1,13 +1,10 @@
-
-package main
+package go_ent
 
 import (
 	"context"
 	"fmt"
-	"github.com/99designs/gqlgen/client"
 	"github.com/Oscarteg/go-ent/ent"
 	"github.com/Oscarteg/go-ent/ent/user"
-	"golang.org/x/net/webdav"
 	"log"
 	"time"
 
@@ -53,7 +50,7 @@ func QueryUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 	return u, nil
 }
 
-func CreateCar(ctx context.Context, client *ent.Client, model string) (*ent.Car, error)  {
+func CreateCar(ctx context.Context, client *ent.Client, model string) (*ent.Car, error) {
 	car, err := client.Car.Create().SetModel(model).SetRegisteredAt(time.Now()).Save(ctx)
 	return car, err
 }
@@ -62,12 +59,11 @@ func CreateCars(ctx context.Context, client *ent.Client) (*ent.User, error) {
 
 	tesla, err := CreateCar(ctx, client, "Tesla")
 
-	if	err != nil {
+	if err != nil {
 		return nil, fmt.Errorf("failed creating car")
 	}
 
 	log.Println("car was created")
-
 
 	log.Println("car was created: ", tesla)
 

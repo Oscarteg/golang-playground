@@ -11,12 +11,11 @@ func TestFibonacci(t *testing.T) {
 	quit := make(chan int)
 
 	go func() {
-		for i := 0; i< 10; i++  {
+		for i := 0; i < 10; i++ {
 			fmt.Println(<-c)
 		}
 		quit <- 0
 	}()
-
 
 	src.Fibonacci(c, quit)
 }
