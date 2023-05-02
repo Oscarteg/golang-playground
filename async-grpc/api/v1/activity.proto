@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.helloworld";
+option java_outer_classname = "HelloWorldProto";
+
+option go_package = "github.com/oscarteg/async-grpc/api";
+
+import "google/protobuf/timestamp.proto";
+
+message Activity {
+  int32 id = 1;
+  string description = 3;
+}
